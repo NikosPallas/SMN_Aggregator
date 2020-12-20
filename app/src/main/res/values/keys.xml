@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="twitter_consumer_key">JQSI85ziTRoCHZvItYMcEe74d</string>
+
+    <string name="twitter_consumer_secret">IyjOWe4XgcJsacXROoepAWtM4cL0PTcrJYtJzXSiitdqBFG0OC</string>
+
+    <string name="twitter_access_token">1330830428555587584-Fb8Qx7S6NTXUvWQaXxfFscyWzxOkpd</string>
+
+    <string name="twitter_access_token_secret">VB02SQ8p5Ek7FYLOUgZzlnmBo1VdgOa6jj4rmZsovmbdi</string>
+
+
+</resources>

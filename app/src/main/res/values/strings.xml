@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">newSMN</string>
+    <string name="facebook_app_id">990704334791650</string>
+    <string name="fb_login_protocol_scheme">fb990704334791650</string>
 </resources>

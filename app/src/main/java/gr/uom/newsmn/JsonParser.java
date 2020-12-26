@@ -16,8 +16,8 @@ public class JsonParser {
     private static final String TWEET_ID_LITERAL = "id";
     private static final String BODY_ID_LITERAL = "text";
 
-    public List<Tweet> parsePostData(String postJsonData){
-        List<Tweet> TweetList = new ArrayList<>();
+    public List<FbPost> parsePostData(String postJsonData){
+        List<FbPost> TweetList = new ArrayList<>();
 
         try{
             JSONArray jsonPostArray = new JSONArray(postJsonData);
@@ -28,11 +28,11 @@ public class JsonParser {
                 int id = postJsonObject.getInt(TWEET_ID_LITERAL);
                 String text = postJsonObject.getString(BODY_ID_LITERAL);
 
-                Tweet tweet = new Tweet();
-                tweet.setId(id);
-                tweet.setText(text);
+               // FbPost tweet = new FbPost();
+               // tweet.setId(id);
+                //tweet.setText(text);
 
-                TweetList.add(tweet);
+               // TweetList.add(tweet);
             }
 
         }catch (JSONException ex){

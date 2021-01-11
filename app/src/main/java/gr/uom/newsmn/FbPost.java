@@ -1,5 +1,7 @@
 package gr.uom.newsmn;
 
+import com.facebook.AccessToken;
+
 public class FbPost {
 
     String post;
@@ -22,4 +24,5 @@ public class FbPost {
                 "post='" + post + '\'' +
                 '}';
     }
+
 }

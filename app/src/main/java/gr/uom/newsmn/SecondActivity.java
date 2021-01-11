@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import twitter4j.Location;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
@@ -52,6 +55,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 
 public class SecondActivity extends AppCompatActivity {
@@ -59,6 +63,8 @@ public class SecondActivity extends AppCompatActivity {
     private static final String TAG = "Rest App";
 
     private ListView listOfPosts;
+    public long UserId ;
+    public String UserLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +95,8 @@ public class SecondActivity extends AppCompatActivity {
 
 
 
-        public ArrayList<String> downloadRestData(String hashtag) {  //remoteUrl
-            Log.d(TAG, "Downloading data.....");
+        public ArrayList<String> downloadRestData(String hashtag) {  //Υπαρχουν αντιστοιχες μεθοδοι getToken για το καθενα απο αυτα τα credentials
+            Log.d(TAG, "Downloading Tweets.....");
 
             ConfigurationBuilder cb = new ConfigurationBuilder();
             cb.setDebugEnabled(true)
@@ -113,6 +119,13 @@ public class SecondActivity extends AppCompatActivity {
 
 
             for (twitter4j.Status status : result.getTweets()) {
+               // for(int i=0; i<1 ; i++) {
+                    //System.out.println(status);
+                    //System.out.println("Value1--------------------" + status.getUser().getId());
+                    //UserId = status.getUser().getId();
+                    //UserLocation = status.getUser().getLocation();
+                   // System.out.println("Value2--------------------" + status.getUser().getLocation());
+               // }
                 System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
                 ListOfTweets.add("@" + status.getUser().getScreenName() + ":" + status.getText());
             }
@@ -142,6 +155,20 @@ public class SecondActivity extends AppCompatActivity {
                 listOfPosts.setAdapter(adapter);
 
 
+                //Μηνυμα Toast με τις λεπτομερειες(id και Location) καθε φορα που πατας σε καποιο tweet
+
+            listOfPosts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                        long arg3) {
+                    // TODO Auto-generated method stub
+                    Toast.makeText(SecondActivity.this, "id: " + UserId + "Location: " + UserLocation , Toast.LENGTH_SHORT).show();
+                }
+
+            });
+
+
                 Log.d(TAG, String.valueOf(ListOfTweets));
 
 
@@ -151,6 +178,34 @@ public class SecondActivity extends AppCompatActivity {
         //public ArrayList<String> getArrayListToPass(){
         // return ArrayListToPass;
         // }
+
+        //fb 1st ID 990704334791650
+        //<uses-feature android:name="android.hardware.type.watch" /> problem with Feature WATCH
+        //<uses-permission android:name="android.permission.WAKE_LOCK" />
+
+        /*<uses-library
+            android:name="com.google.android.wearable"
+            android:required="true" />
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+
+            <activity
+            android:name=".ThirdActivity"
+            android:label="@string/title_activity_third">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+            */
 
 
     }

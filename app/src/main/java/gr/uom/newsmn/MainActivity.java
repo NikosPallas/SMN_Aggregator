@@ -1,23 +1,25 @@
 package gr.uom.newsmn;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenSource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -26,18 +28,6 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
-
 import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Rest App";
 
     String pg_token = "EAADE9NOJtpMBAFPG2SVZAu3zNxvuvynpo8Hy1SZASkfh6ZAEazqMZALH4BPV6Y8WcVPFNpUM7ZA1DyVvUjg5rPLeARmJ3SWMyIf9q98p42PZCfw5jCZBLHzqeDdDxqQS2d6lcCi8DLSjmrgzaMzGZAZAMRkWLSUAv4xVyarVnJ8PpLGZBlXzkgem9kTY5tSN4QZAY7D66pPiER8mtpzocCxFQfz";
+
+    private static boolean PICK_IMAGES_PERM_GRANTED = false;
+    private static final int REQUEST_CODE_IMAGES =102;
 
     CheckBox TweetBox;
     CheckBox FbBox;
@@ -125,6 +118,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        //Λειτουργικότητα Share an Image:
+        Button imaShare = findViewById(R.id.ImaShareBtn);
+
+        imaShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                checkPermission();
+
+
+                Intent PickIntent = new Intent();
+                PickIntent.setType("image/*");
+                PickIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(PickIntent, " Pick an image to share"), REQUEST_CODE_IMAGES);
+
+
+            }
+
+        });
+
 
 
         //Από αυτό το σημείο και κάτω υπάρχει η λειτουργικότητα του Facebook login
@@ -232,6 +247,52 @@ public class MainActivity extends AppCompatActivity {
 
 
 */
+
+       if( requestCode!= -1){
+           Uri imageUri = data.getData();
+           Intent uploadImage = new Intent(Intent.ACTION_SEND);
+           uploadImage.setType("image/jpg");
+           uploadImage.putExtra(Intent.EXTRA_STREAM, imageUri);
+           startActivity(Intent.createChooser(uploadImage, "Share image using"));
+       }
+    }
+
+
+    public void checkPermission(){
+        int hadImagePermission = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if(hadImagePermission == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "permission check says is already granted!");
+            PICK_IMAGES_PERM_GRANTED = true;
+        }
+        else{
+            Log.d(TAG, "Permission does not exist. Requesting now...");     // αν δεν υπαρχει στην μνημη που τσεκαρουμε ζηταμε το αντιστοιχο permission
+
+            String[] permissionToAsk = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE};  //φτιαχνω μονοδιαστατο πινακα και βαζω στην 1η θεση αυτο το permission(READ_CONTACS)
+
+            ActivityCompat.requestPermissions(MainActivity.this, permissionToAsk, REQUEST_CODE_IMAGES);   //αυτη η εντολη κανει  pop-up το παραθυρο που μας ζηταει το  permission που χρειαζεται το  app
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode){
+            case REQUEST_CODE_IMAGES:{
+                //if request denied, the result arrays are empty.
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(TAG, "Permission granted :)");
+                    PICK_IMAGES_PERM_GRANTED =true;
+
+                }
+                else {
+                    Log.d(TAG, "Permission denied :(");
+                }
+
+            }
+
+            //if other permissions requests exist continue here
+        }
 
     }
 

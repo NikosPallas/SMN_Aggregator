@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,13 +29,26 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Rest App";
 
-    String pg_token = "EAADE9NOJtpMBAFPG2SVZAu3zNxvuvynpo8Hy1SZASkfh6ZAEazqMZALH4BPV6Y8WcVPFNpUM7ZA1DyVvUjg5rPLeARmJ3SWMyIf9q98p42PZCfw5jCZBLHzqeDdDxqQS2d6lcCi8DLSjmrgzaMzGZAZAMRkWLSUAv4xVyarVnJ8PpLGZBlXzkgem9kTY5tSN4QZAY7D66pPiER8mtpzocCxFQfz";
+    String LongLivedToken = "EAADE9NOJtpMBAB2fHOWzrSzC02jMnwaKntQVNkTeyd4jVkeFBgMICrjzRsJ0uLfsx6xZCfr4c0XsxZAd521LSaqZB6nowOpZAxUXZChBbiMlL1PejF1ZBVkUeV8OMmVRJXYSqf1y98ZBV7KvvICcbfeL5EoAtJeFlLDbGlXSza9rDzh0dFo2bhL";
+
+    String pg_token = "EAADE9NOJtpMBANkvwb67LRhZA6kZChOQF1JiK6TsuCWZCsnqVAQSBei5sZAyZAMdQTnO0C7yDzvOQisFwVQm4XZA5ano9cNlL6xDKwkmq75xeu6H0ZA5IZCYlQ8crTu1XnqAfxDZBrLeNRsKq3cbqwswPogFbmaFyRCMfpZCuYWChVfSk1oZCO1cZCj49SlgtbOMrnUZD";
+
+    List<InstaPostIds> InstagramIdsList = new ArrayList<>();
+    InstaPostIds InstaPost = new InstaPostIds();
+
 
     private static boolean PICK_IMAGES_PERM_GRANTED = false;
     private static final int REQUEST_CODE_IMAGES =102;
@@ -44,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     CheckBox InstaBox;
 
     LoginButton login;
-    RecyclerView recyclerView;
-    public FbAdapter fbAdapter;
+   // RecyclerView recyclerView;
+   // public FbAdapter fbAdapter;
     public RecyclerView.LayoutManager layoutManager;
     public CallbackManager callbackManager;
 
@@ -71,22 +85,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Button InstaButton = findViewById(R.id.InstaBtn);
-
-        InstaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String HashTxt = HashtagTxt.getText().toString();
-                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
-                intent.putExtra("hashtag", HashTxt);
-
-                startActivity(intent);
-
-            }
-        });
-
-
         CheckBox TweetBox = findViewById(R.id.TweetBox);
         CheckBox InstaBox = findViewById(R.id.InstaBox);
         
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(TweetBox.isChecked()){
                     //Make a Tweet
-                    //ΑΣΥΓΧΡΟΝΑ???
+                    //ΑΣΥΓΧΡΟΝΑ
 
                     String StringOfPostTxt = PostTxt.getText().toString();
                     TweetAsync TweetObject = new TweetAsync();
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         //3. Τα keys tokens μπορει να εχουν ληξει
 
         login = findViewById(R.id.login_button);
-        recyclerView = findViewById(R.id.recyclerView);
+     //   recyclerView = findViewById(R.id.recyclerView);
 
         //CallbackManager callbackManager = CallbackManager.Factory.create();
         callbackManager = CallbackManager.Factory.create();
@@ -160,6 +158,59 @@ public class MainActivity extends AppCompatActivity {
 
                 login.setVisibility(View.INVISIBLE);
                 buttonSend.setVisibility(View.INVISIBLE);
+
+
+                Log.d(TAG, "Downloading  Insta Posts");
+
+
+                AccessToken lv = new AccessToken(LongLivedToken,String.valueOf(R.string.appId),"105208004851199",null,null,null,null,null,null,null);
+
+                EditText HashTxt = (EditText) findViewById( R.id.HashtagEditText);
+                String StringOfHashTxt = HashTxt.getText().toString();
+
+                Bundle parameters = new Bundle();
+                parameters.putString("user_id", "17841445397955029");
+                //parameters.putString("q", StringOfHashTxt);
+                parameters.putString("q", "Ronaldo");
+
+                GraphRequest request = GraphRequest.newGraphPathRequest(
+                        lv,
+                        "/ig_hashtag_search",
+                        new GraphRequest.Callback() {
+                            @Override
+                            public void onCompleted(GraphResponse response) {
+
+                               // Log.d(TAG, "hashtag:"+ StringOfHashTxt);
+                                //Log.d(TAG, response.toString());
+
+                                //προσπελαση των JSONObjects που κατεβασαμε
+
+                                try {
+                                    JSONArray jsonUrlArray = response.getJSONObject().getJSONArray("data");
+                                    for(int i = 0; i<jsonUrlArray.length(); i++){
+                                        JSONObject ig_hashtag_url = jsonUrlArray.getJSONObject(i);
+
+                                        String url_id = ig_hashtag_url.getString("id");
+
+                                        // InstaPostIds InstaPost = new InstaPostIds();
+                                        InstaPost.setUrl_id(url_id);
+
+                                        //InstagramIdsList.add(InstaPost);
+
+                                        Log.d(TAG, "ig hashtag id ----------- " + InstaPost.getUrl_id().toString());
+
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                            }
+                        });
+
+                request.setParameters(parameters);
+                request.executeAsync();
 
 
             }
@@ -218,6 +269,8 @@ public class MainActivity extends AppCompatActivity {
            }
        });
 
+
+
         /*GraphRequest graphRequestFriends = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
            @Override
            public void onCompleted(JSONArray objects, GraphResponse response) {
@@ -248,7 +301,67 @@ public class MainActivity extends AppCompatActivity {
 
 */
 
-       if( requestCode!= -1){
+       Button InstaButton = findViewById(R.id.InstaBtn);
+
+       InstaButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               AccessToken lv = new AccessToken(LongLivedToken,String.valueOf(R.string.appId),"105208004851199",null,null,null,null,null,null,null);
+
+               GraphRequest request = GraphRequest.newGraphPathRequest(
+                       lv,
+                       "/"+ InstaPost.getUrl_id().toString()+"/recent_media",
+                       new GraphRequest.Callback() {
+                           @Override
+                           public void onCompleted(GraphResponse response) {
+
+                              // Log.d(TAG, "Recent media: ---------" + response.toString());
+
+                               try {
+                                   JSONArray jsonMediaUrlArray = response.getJSONObject().getJSONArray("data");
+
+                                   for(int i = 0; i<jsonMediaUrlArray.length(); i++){
+                                       JSONObject hashtag_url = jsonMediaUrlArray.getJSONObject(i);
+
+                                       InstaPostIds InstaPostMediaUrl = new InstaPostIds();
+
+                                       if(hashtag_url.has("media_url")) {
+
+                                           String media_url = hashtag_url.getString("media_url");
+                                           InstaPostMediaUrl.setMedia_url(media_url);
+                                           //Log.d(TAG," MEDIA ----------" + InstaPostMediaUrl.getMedia_url().toString());
+                                       }
+
+                                       InstagramIdsList.add(InstaPostMediaUrl);
+                                   }
+
+                                   for( InstaPostIds instaPost : InstagramIdsList ) {
+                                       Log.d(TAG, "ids------------------------------"+InstagramIdsList.toString());
+                                   }
+
+                                    Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                                    intent.putParcelableArrayListExtra("InstagramListOf_Urls", (ArrayList<? extends Parcelable>) InstagramIdsList);
+                                    startActivity(intent);
+
+                               } catch (JSONException e) {
+                                   e.printStackTrace();
+                               }
+                           }
+                       });
+
+               Bundle parameters = new Bundle();
+               parameters.putString("user_id", "17841445397955029");
+               parameters.putString("fields", "media_url");
+               request.setParameters(parameters);
+               request.executeAsync();
+
+           }
+       });
+
+
+
+       if( requestCode == 102){
            Uri imageUri = data.getData();
            Intent uploadImage = new Intent(Intent.ACTION_SEND);
            uploadImage.setType("image/jpg");
@@ -268,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.d(TAG, "Permission does not exist. Requesting now...");     // αν δεν υπαρχει στην μνημη που τσεκαρουμε ζηταμε το αντιστοιχο permission
 
-            String[] permissionToAsk = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE};  //φτιαχνω μονοδιαστατο πινακα και βαζω στην 1η θεση αυτο το permission(READ_CONTACS)
+            String[] permissionToAsk = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE};  //φτιαχνω μονοδιαστατο πινακα και βαζω στην 1η θεση αυτο το permission(READ_EXTERNAL_STORAGE)
 
             ActivityCompat.requestPermissions(MainActivity.this, permissionToAsk, REQUEST_CODE_IMAGES);   //αυτη η εντολη κανει  pop-up το παραθυρο που μας ζηταει το  permission που χρειαζεται το  app
         }

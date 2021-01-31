@@ -46,7 +46,7 @@ public class ThirdActivity extends AppCompatActivity {
 
             for(InstaPostIds instapost : InstaListOf_Urls) {
                 if(instapost!=null&&instapost.getMedia_url()!=null) {
-                    Log.d(TAG,"Media urls-------------------" + instapost.getMedia_url().toString());
+                    //Log.d(TAG,"Media urls-------------------" + instapost.getMedia_url().toString());
 
                     ListOfMediaUrls.add(instapost.getMedia_url());
                     }

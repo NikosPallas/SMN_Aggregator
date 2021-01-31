@@ -40,7 +40,7 @@ import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "Rest App";
+    private static final String TAG = "SMN App";
 
     String LongLivedToken = "EAADE9NOJtpMBAB2fHOWzrSzC02jMnwaKntQVNkTeyd4jVkeFBgMICrjzRsJ0uLfsx6xZCfr4c0XsxZAd521LSaqZB6nowOpZAxUXZChBbiMlL1PejF1ZBVkUeV8OMmVRJXYSqf1y98ZBV7KvvICcbfeL5EoAtJeFlLDbGlXSza9rDzh0dFo2bhL";
 

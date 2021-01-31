@@ -10,7 +10,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TweetAsync extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = "Rest App";
+    private static final String TAG = "Making a tweet";
 
     public String MakeTweet(String PostTxt) {
 

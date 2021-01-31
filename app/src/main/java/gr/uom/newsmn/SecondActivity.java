@@ -60,7 +60,7 @@ import android.widget.Toast;
 
 public class SecondActivity extends AppCompatActivity {
 
-    private static final String TAG = "Rest App";
+    private static final String TAG = "Twitter process";
 
     private ListView listOfPosts;
     public long UserId ;
@@ -119,13 +119,13 @@ public class SecondActivity extends AppCompatActivity {
 
 
             for (twitter4j.Status status : result.getTweets()) {
-               // for(int i=0; i<1 ; i++) {
-                    //System.out.println(status);
-                    //System.out.println("Value1--------------------" + status.getUser().getId());
-                    //UserId = status.getUser().getId();
-                    //UserLocation = status.getUser().getLocation();
-                   // System.out.println("Value2--------------------" + status.getUser().getLocation());
-               // }
+                for(int i=0; i<1 ; i++) {
+                    System.out.println(status);
+                   // System.out.println("Value1--------------------" + status.getUser().getId());
+                    UserId = status.getUser().getId();
+                    UserLocation = status.getUser().getLocation();
+                    //System.out.println("Value2--------------------" + status.getUser().getLocation());
+                }
                 System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
                 ListOfTweets.add("@" + status.getUser().getScreenName() + ":" + status.getText());
             }
@@ -164,6 +164,7 @@ public class SecondActivity extends AppCompatActivity {
                                         long arg3) {
                     // TODO Auto-generated method stub
                     Toast.makeText(SecondActivity.this, "id: " + UserId + "Location: " + UserLocation , Toast.LENGTH_SHORT).show();
+
                 }
 
             });
@@ -178,34 +179,6 @@ public class SecondActivity extends AppCompatActivity {
         //public ArrayList<String> getArrayListToPass(){
         // return ArrayListToPass;
         // }
-
-        //fb 1st ID 990704334791650
-        //<uses-feature android:name="android.hardware.type.watch" /> problem with Feature WATCH
-        //<uses-permission android:name="android.permission.WAKE_LOCK" />
-
-        /*<uses-library
-            android:name="com.google.android.wearable"
-            android:required="true" />
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
-
-
-            <activity
-            android:name=".ThirdActivity"
-            android:label="@string/title_activity_third">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-            */
 
 
     }
